@@ -43,6 +43,30 @@ jobs:
       - name: Get Version
         run: |
           echo "version_name=${{steps.fetch-version.outputs.VERSION_NAME}}" >> $GITHUB_ENV
+      - name: 'Publish to William278.net 🚀'
+        uses: WiIIiam278/bones-publish-action@v1
+        with:
+          api-key: ${{ secrets.BONES_API_KEY }}
+          project: 'huskhomes'
+          channel: 'alpha'
+          version: ${{ env.version_name }}
+          changelog: ${{ github.event.head_commit.message }}
+          distro-names: |
+            paper
+            sponge-10
+            fabric-1.21
+          distro-groups: |
+            paper
+            sponge
+            fabric
+          distro-descriptions: |
+            Paper
+            Sponge API 10
+            Fabric 1.21
+          files: |
+            target/HuskHomes-Paper-${{ env.version_name }}.jar
+            target/HuskHomes-Sponge-${{ env.version_name }}.jar
+            target/HuskHomes-Fabric-${{ env.version_name }}+mc.1.21.jar
       - name: 'Spigot: Publish to Modrinth & Hangar 🚰'
         uses: WiIIiam278/mc-publish@hangar
         with:
@@ -83,6 +107,7 @@ jobs:
             1.20.4
             1.20.5
             1.20.6
+            1.21
           java: 17
       - name: 'Sponge: Publish to Modrinth 🧽'
         uses: WiIIiam278/mc-publish@hangar
@@ -122,7 +147,7 @@ jobs:
             plan | suggests | *
             impactor | suggests | *
             placeholder-api | suggests | *
-          files-primary: target/HuskHomes-Fabric-${{ env.version_name }}.jar
+          files-primary: target/HuskHomes-Fabric-${{ env.version_name }}+mc.1.21.jar
           name: HuskHomes (Fabric) v${{ env.version_name }}
           version: ${{ env.version_name }}
           version-type: alpha
@@ -130,14 +155,5 @@ jobs:
           loaders: |
             fabric
           game-versions: |
-            1.20.6
-          java: 17
-      - name: 'Upload GitHub Artifacts 📦'
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: HuskHomes
-          path: |
-            target/HuskHomes-Paper-${{ env.version_name }}.jar
-            target/HuskHomes-Sponge-${{ env.version_name }}.jar
-            target/HuskHomes-Fabric-${{ env.version_name }}.jar
+            1.21
+          java: 21
